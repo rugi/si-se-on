@@ -16,7 +16,7 @@ public class Main {
 
     private static void createAndShowGUI() {
         //Create and set up the window.
-        SiSeOnFrame frame = new SiSeOnFrame("BorderDemo");
+        SiSeOnFrame frame = new SiSeOnFrame("Simple Search In PDF Docs. Powered by LUCENE.");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
 
         //Display the window.

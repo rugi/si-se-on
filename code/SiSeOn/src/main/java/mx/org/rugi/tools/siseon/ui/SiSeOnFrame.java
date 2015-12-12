@@ -6,7 +6,9 @@
 package mx.org.rugi.tools.siseon.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,12 +17,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -28,7 +32,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import mx.org.rugi.tools.siseon.core.IndexItem;
+import mx.org.rugi.tools.siseon.core.IArray;
+import mx.org.rugi.tools.siseon.services.DemiurgoFacade;
+import mx.org.rugi.tools.siseon.util.FileUtil;
 
 /**
  *
@@ -82,6 +88,16 @@ public class SiSeOnFrame extends JFrame {
     /**
      *
      */
+    private JLabelInput labelInput;
+
+    /**
+     *
+     */
+    private JButton buttonSearch;
+
+    /**
+     *
+     */
     public SiSeOnFrame() {
         this("");
 
@@ -108,8 +124,8 @@ public class SiSeOnFrame extends JFrame {
             }
         });
 
-        mMain = new JMenu("Config");
-        mMain.setMnemonic(KeyEvent.VK_R);
+        mMain = new JMenu("INDEX");
+        mMain.setMnemonic(KeyEvent.VK_I);
 
         mMain.add(mCreateIndex);
         mCreateIndex.addActionListener(new ActionListener() {
@@ -158,18 +174,25 @@ public class SiSeOnFrame extends JFrame {
         grid.addMouseListener(mouseListener);
         //grid.getColumnModel().getSelectionModel().addListSelectionListener(listener);
         JScrollPane scroll = new JScrollPane(grid);
-        //---          
-        IndexItem item1 = new IndexItem();
-        item1.setName("4de97.pdf");
-        item1.setPath("/home/rugi/Downloads/4de97.pdf");
-        item1.setLenght("56214");
-        item1.setModified("Aug 19 15:14");
-        modeloGrid.addRow(item1.toArray());
-        //--
+
+        tabbed = new JTabbedPane();
+        JPanel tabPanel = new JPanel(new GridLayout(0, 1));
+        ActionListener searhActionListener = new searhActionListener();
+        labelInput = new JLabelInput("Texto: ", "");
+        labelInput.addActionTextInput(searhActionListener);
+        tabPanel.add(labelInput);
+
+        //tabPanel.add(comboRepo);
+        buttonSearch = new JButton("Buscar dentro del indice existente.");
+        buttonSearch.addActionListener(searhActionListener);
+        tabPanel.add(buttonSearch);
+
+        tabbed.add("Buscar:", tabPanel);
         //Y ahora el layout Final.
         this.setLayout(new BorderLayout());
-        //this.add(tabbed, BorderLayout.NORTH);
+        this.add(tabbed, BorderLayout.NORTH);
         this.add(scroll, BorderLayout.CENTER);
+        status.setText(FileUtil.getWorkDirectory());
         this.add(status, BorderLayout.SOUTH);
     }
 
@@ -186,7 +209,6 @@ public class SiSeOnFrame extends JFrame {
             if (grid.getSelectedRow() >= 0) {
                 int fila = grid.getSelectedRow();
                 System.out.println("ROW:" + fila);
-                System.out.println("PATH:" + grid.getModel().getValueAt(fila, 1).toString());
 
             }
         }
@@ -206,17 +228,26 @@ public class SiSeOnFrame extends JFrame {
             if (me.getClickCount() == 2) {
                 int fila = grid.getSelectedRow();
                 System.out.println("Seleccionada " + grid.getSelectedRow());
-                String openFile =grid.getModel().getValueAt(fila, 1).toString();
-                System.out.println("Abrir:" + openFile);
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        File myFile = new File(openFile);
-                        Desktop.getDesktop().open(myFile);
-                    } catch (IOException ex) {
-                            JOptionPane.showMessageDialog(SiSeOnFrame.this, "No fue posible abrir el archivo.");
+                if (grid.getModel().getValueAt(fila, 1) != null) {
+                    String openFile = grid.getModel().getValueAt(fila, 1).toString();
+                    System.out.println("Abrir:" + openFile);
+                    if (new File(openFile).exists()) {
+                        if (Desktop.isDesktopSupported()) {
+                            try {
+                                File myFile = new File(openFile);
+                                Desktop.getDesktop().open(myFile);
+                            } catch (IOException ex) {
+                                JOptionPane.showMessageDialog(SiSeOnFrame.this, 
+                                        "No fue posible abrir el archivo.", 
+                                        "Archivo no encontrado o dañado.",
+                                        JOptionPane.WARNING_MESSAGE);
+                            }
+                        } else {
+                            System.out.println("DESKTOP NO SOPORTADO");
+                        }//if
+                    } else {
+                        JOptionPane.showMessageDialog(SiSeOnFrame.this, "El archivo ya no se encuentra en la ruta donde fue indexado.");
                     }
-                }else{
-                    System.out.println("DESKTOP NO SOPORTADO");
                 }
             }
         }
@@ -243,4 +274,71 @@ public class SiSeOnFrame extends JFrame {
         super(title);
         initComponents();
     }
-}
+
+    private void cleanGrid() {
+        int p = grid.getRowCount();
+        for (int k = 0; k < p; k++) {
+            modeloGrid.removeRow(0);
+        }
+    }
+
+    class searhActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            cleanGrid();
+
+            if (!DemiurgoFacade.getInstance().getService().existRepo()) {
+                JOptionPane.showMessageDialog(SiSeOnFrame.this, 
+                        "Aun no existe un INDEX sobre el cual buscar. Es preciso primero crear un INDEX.", 
+                        "Debes crear un INDEX.",
+                        JOptionPane.WARNING_MESSAGE);
+                return;                
+            }
+//            if (!clasButton.isSelected() && !jarButton.isSelected()) {
+//                JOptionPane.showMessageDialog(null, "Debe Seleccionar una opcion de busqueda: jar o class");
+//                return;
+//            }
+//            if (comboRepoModel.getSelectedItem() == null) {
+//                JOptionPane.showMessageDialog(null, "No existe un repositorio seleccionado.");
+//                return;
+//            }
+            if (labelInput.getTextInput().trim().length() == 0) {
+                JOptionPane.showMessageDialog(SiSeOnFrame.this, "Debe especificar un criterio de búsqueda.");
+                return;
+            }
+            SearchThread st = new SearchThread();
+            (new Thread(st)).start();
+        }
+    }
+
+    class SearchThread implements Runnable {
+
+        @Override
+        public void run() {
+            int j = 0;
+            buttonSearch.setEnabled(false);
+            Cursor c1 = buttonSearch.getCursor();
+            buttonSearch.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            String searchText = labelInput.getTextInput().trim();
+            Object[] r = null;
+
+            r = DemiurgoFacade.getInstance().getService().findByContent("word", 100).toArray();
+
+            if (r == null || r.length == 0) {
+                JOptionPane.showMessageDialog(null, "No se encontraron resultados para su busqueda.");
+            } else {
+                j = r.length;
+                for (int k = 0; k < r.length; k++) {
+                    modeloGrid.addRow(((IArray) r[k]).toArray());
+                }
+            }
+            buttonSearch.setEnabled(true);
+            buttonSearch.setCursor(c1);
+            status.setText("Total de resultados:" + j);
+            // Fin de thread
+            // se restaura boton.
+        }
+    }
+
+}//class
