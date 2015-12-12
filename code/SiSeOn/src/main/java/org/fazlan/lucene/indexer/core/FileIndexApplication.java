@@ -1,20 +1,37 @@
 package org.fazlan.lucene.indexer.core;
 
-
 import org.apache.lucene.queryParser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * 
+ * @author org.fazlan.lucene.indexer.core
+ */
 public class FileIndexApplication {
+
     // location where the index will be stored.
+
+    /**
+     * 
+     */
     private static final String INDEX_DIR = "src/main/resources/index";
+    /**
+     * 
+     */
     private static final int DEFAULT_RESULT_SIZE = 100;
 
+    /**
+     * 
+     * @param args
+     * @throws IOException
+     * @throws ParseException 
+     */
     public static void main(String[] args) throws IOException, ParseException {
 
-        File pdfFile = new File("src/main/resources/files/HelloPDFBox.pdf");
+        File pdfFile = new File("/home/rugi/Downloads/DVZ_2014_MUSTANG_INSTALL.pdf");
         IndexItem pdfIndexItem = new PDFIndexer().index(pdfFile);
 
         // creating the indexer and indexing the items
@@ -26,15 +43,15 @@ public class FileIndexApplication {
 
         // creating the Searcher to the same index location as the Indexer
         Searcher searcher = new Searcher(INDEX_DIR);
-        List<IndexItem> result = searcher.findByContent("World", DEFAULT_RESULT_SIZE);
+        List<IndexItem> result = searcher.findByContent("Diverza", DEFAULT_RESULT_SIZE);
         print(result);
 
         searcher.close();
     }
 
-     /**
-      * print the results.
-      */
+    /**
+     * print the results.
+     */
     private static void print(List<IndexItem> result) {
         System.out.println("Result Size: " + result.size());
 

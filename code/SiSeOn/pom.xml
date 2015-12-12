@@ -16,11 +16,13 @@
             <artifactId>lucene-core</artifactId>
             <version>3.6.0</version>
         </dependency>
+
+        
         <dependency>
-            <groupId>pdfbox</groupId>
+            <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-            <version>0.7.3</version>
-        </dependency>
+            <version>1.8.10</version>
+        </dependency>      
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
