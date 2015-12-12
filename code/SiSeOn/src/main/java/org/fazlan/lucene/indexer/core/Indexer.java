@@ -53,6 +53,7 @@ public class Indexer {
         doc.add(new Field(IndexItem.PATH, indexItem.getPath(), Field.Store.YES, Field.Index.ANALYZED));
         doc.add(new Field(IndexItem.CONTENT, indexItem.getContent(), Field.Store.YES, Field.Index.ANALYZED));
         doc.add(new Field(IndexItem.LENGTH, indexItem.getLength(), Field.Store.YES, Field.Index.ANALYZED));
+        doc.add(new Field(IndexItem.LASTUPDATE, indexItem.getLastUpdate(), Field.Store.YES, Field.Index.ANALYZED));
 
         // add the document to the index
         writer.addDocument(doc);

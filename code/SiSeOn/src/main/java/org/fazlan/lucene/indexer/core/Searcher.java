@@ -89,7 +89,8 @@ public class Searcher {
                     doc.get(IndexItem.TITLE),
                     doc.get(IndexItem.PATH),
                     doc.get(IndexItem.CONTENT),
-                    doc.get(IndexItem.LENGTH)
+                    doc.get(IndexItem.LENGTH),
+                    doc.get(IndexItem.LASTUPDATE)
             ));
         }
 

@@ -27,6 +27,7 @@ public class PDFIndexer implements FileIndexer {
                 file.getName(),
                 file.getAbsolutePath(),
                 content,
-                (file.length() + ""));
+                (file.length() + ""),
+                file.lastModified() + "");
     }
 }

@@ -5,7 +5,6 @@
  */
 package mx.org.rugi.tools.siseon;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import mx.org.rugi.tools.siseon.ui.SiSeOnFrame;
 
@@ -18,10 +17,7 @@ public class Main {
     private static void createAndShowGUI() {
         //Create and set up the window.
         SiSeOnFrame frame = new SiSeOnFrame("BorderDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Create and set up the content pane.
-         frame.setContentPane(new JButton("Run"));
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);       
 
         //Display the window.
         frame.pack();

@@ -31,6 +31,11 @@ public class IndexItem {
     /**
      *
      */
+    private String lastUpdate;
+
+    /**
+     *
+     */
     public static final String ID = "id";
     /**
      *
@@ -51,17 +56,24 @@ public class IndexItem {
 
     /**
      *
+     */
+    public static String LASTUPDATE = "lastUpdate";
+
+    /**
+     *
      * @param id
      * @param title
      * @param path
      * @param content
      */
-    public IndexItem(Long id, String title, String path, String content, String length) {
+    public IndexItem(Long id, String title, String path, String content, String length, String lastUpdate) {
         this.id = id;
         this.title = title;
         this.path = path;
         this.content = content;
         this.length = length;
+        this.lastUpdate = lastUpdate;
+
     }
 
     /**
@@ -95,6 +107,7 @@ public class IndexItem {
                 + ", title='" + title + '\''
                 + ", path='" + path + '\''
                 + ", length='" + length + '\''
+                + ", laspUpdate='" + lastUpdate + '\''
                 + '}';
     }
 
@@ -124,5 +137,19 @@ public class IndexItem {
      */
     public void setLength(String length) {
         this.length = length;
+    }
+
+    /**
+     * @return the lastUpdate
+     */
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    /**
+     * @param lastUpdate the lastUpdate to set
+     */
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 }

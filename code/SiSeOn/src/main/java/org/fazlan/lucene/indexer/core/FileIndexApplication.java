@@ -31,7 +31,7 @@ public class FileIndexApplication {
      */
     public static void main(String[] args) throws IOException, ParseException {
 
-        File pdfFile = new File("/home/rugi/Downloads/DVZ_2014_MUSTANG_INSTALL.pdf");
+        File pdfFile = new File("/home/X/X/X.pdf");
         IndexItem pdfIndexItem = new PDFIndexer().index(pdfFile);
 
         // creating the indexer and indexing the items
