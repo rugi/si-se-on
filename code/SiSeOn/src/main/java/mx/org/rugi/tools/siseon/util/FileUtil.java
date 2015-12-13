@@ -14,23 +14,21 @@ import java.io.*;
 public class FileUtil {
 
     /**
-     * 
+     *
      */
     private static final String DIRECTORY_NAME = ".siseon";
 
-    
-    
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public static String getUserHomeDirectory() {
         return System.getProperty("user.home").toString();
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public static String getWorkDirectory() {
         //validamos
@@ -47,9 +45,9 @@ public class FileUtil {
     }
 
     /**
-     * 
+     *
      * @param fileName
-     * @return 
+     * @return
      */
     public static boolean exist(String fileName) {
         String dirTarger = fileName;
@@ -57,14 +55,14 @@ public class FileUtil {
         boolean res = false;
         if (temp.exists()) {
             res = true;
-        } 
+        }
         return res;
-    }  
-    
+    }
+
     /**
-     * 
+     *
      * @param fileName
-     * @return 
+     * @return
      */
     public static boolean existOrCreate(String fileName) {
         String dirTarger = fileName;
@@ -82,12 +80,6 @@ public class FileUtil {
         return res;
     }
 
- 
-    
-  
- 
-     
-    
     public static long getSizeFile(String file) {
         long r = -1;
         if (file == null || file.trim().length() == 0) {
@@ -102,29 +94,68 @@ public class FileUtil {
         }
         return r;
     }
-    
-    public static long getSizeDirectory(String dir){
-    
-          long r = -1;
+
+    public static long getSizeDirectory(String dir) {
+
+        long r = -1;
         if (dir == null || dir.trim().length() == 0) {
             r = -1;
         } else {
             File f = new File(dir);
             if (f.exists()) {
-               if(f.isDirectory()){
-                   File[] fs = f.listFiles();                   
-                   for (int i = 0; i < fs.length; i++) {                       
-                       r+=fs[i].length();
-                   }
-               }else{
-                   //es archivo.
-                   r = f.length();
-               }
+                if (f.isDirectory()) {
+                    File[] fs = f.listFiles();
+                    for (int i = 0; i < fs.length; i++) {
+                        r += fs[i].length();
+                    }
+                } else {
+                    //es archivo.
+                    r = f.length();
+                }
             } else {
                 r = -1;
             }
         }
-        return r;  
+        return r;
     }
-        
+
+    public static void delete(File file) throws IOException {
+
+        if (file.isDirectory()) {
+
+            //directory is empty, then delete it
+            if (file.list().length == 0) {
+
+                file.delete();
+                System.out.println("Directory is deleted : "
+                        + file.getAbsolutePath());
+
+            } else {
+
+                //list all the directory contents
+                String files[] = file.list();
+
+                for (String temp : files) {
+                    //construct the file structure
+                    File fileDelete = new File(file, temp);
+
+                    //recursive delete
+                    delete(fileDelete);
+                }
+
+                //check the directory again, if empty then delete it
+                if (file.list().length == 0) {
+                    file.delete();
+                    System.out.println("Directory is deleted : "
+                            + file.getAbsolutePath());
+                }
+            }
+
+        } else {
+            //if file, then delete it
+            file.delete();
+            System.out.println("File is deleted : " + file.getAbsolutePath());
+        }
+    }
+
 }

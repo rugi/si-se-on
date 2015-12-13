@@ -6,6 +6,7 @@
 package mx.org.rugi.tools.siseon.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -189,7 +190,7 @@ public class JINDEXCreator extends JPanel {
                     File[] files = chooser.getSelectedFiles();
                     if (files != null && files.length > 0) {
                         for (int i = 0; i < files.length; i++) {
-                            if(files[i].getAbsolutePath().toLowerCase().endsWith(".pdf")){
+                            if (files[i].getAbsolutePath().toLowerCase().endsWith(".pdf")) {
                                 itemsModel.addElement(files[i].getAbsolutePath());
                             }
                         }
@@ -245,7 +246,6 @@ public class JINDEXCreator extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            //String dir = chooserDir.getDirectory();
 
             if (itemsModel.getSize() == 0) {
                 JOptionPane.showMessageDialog(JINDEXCreator.this, "Debe indicar al menos un archivo PDF.",
@@ -260,7 +260,7 @@ public class JINDEXCreator extends JPanel {
                 elements.add(nextElement.toString());
             }
             SearchPDFThread sjt = new SearchPDFThread(elements);
-            (new Thread(sjt)).start();            
+            (new Thread(sjt)).start();
         }
     }
 
@@ -276,12 +276,20 @@ public class JINDEXCreator extends JPanel {
 
         @Override
         public void run() {
-           progress.setIndeterminate(true);
+            buttonAddItem.setEnabled(false);
+            listItems.setEnabled(false);
+            status.setText("Se está realizando la búsqueda.... espere un momento.");
+            buttonSearch.setEnabled(false);
+            Cursor c1 = buttonSearch.getCursor();
+            buttonSearch.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            progress.setIndeterminate(true);
             if (this.elements != null && this.elements.size() > 0) {
                 IndexResult res = DemiurgoFacade.getInstance().getService().indexWhithThisList(elements);
                 log.setText(res.getMessage());
             }//if            
             progress.setIndeterminate(false);
+            buttonSearch.setCursor(c1);
+            status.setText("Búsqueda finalizada.");
         }//run
     }
 }

@@ -11,27 +11,28 @@ package mx.org.rugi.tools.siseon.core;
  */
 public class IndexResult {
 
-    private String message;
+    private StringBuilder message;
 
     /**
      *
      */
     public IndexResult() {
         super();
-        this.message = new String();
+        this.message = new StringBuilder();
     }
 
     /**
      * @return the message
      */
     public String getMessage() {
-        return message;
+        return message.toString();
     }
 
     /**
      * @param message the message to set
      */
-    public void setMessage(String message) {
-        this.message = message;
+    public void appendMessage(String message) {
+        this.message.append(message);
+        this.message.append("\n");
     }
 }

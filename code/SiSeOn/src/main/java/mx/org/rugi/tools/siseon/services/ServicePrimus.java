@@ -6,10 +6,13 @@
 package mx.org.rugi.tools.siseon.services;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mx.org.rugi.tools.siseon.core.IndexItem;
 import mx.org.rugi.tools.siseon.core.IndexResult;
 import mx.org.rugi.tools.siseon.util.FileUtil;
@@ -83,9 +86,40 @@ public class ServicePrimus {
                     + NAME_DEFAULT_INDEX,
                     files);
             System.out.println("Resultado " + map);
+            r.appendMessage("Indice creado exitosamente.");
+            r.appendMessage("     Resumen de la operación:");
+            Iterator it1 = map.keySet().iterator();
+            StringBuilder key = new StringBuilder();
+            while (it1.hasNext()) {                
+                key.delete(0, key.length());
+                key.append(it1.next().toString());
+                r.appendMessage("              ARCHIVO:"+key.toString());
+                r.appendMessage("                              RESULTADO:"+map.get(key.toString()));
+            }
         }
-        r.setMessage("Indice creado exitosamente.");
+        r.appendMessage("");
+        r.appendMessage("");
+        r.appendMessage("");
+        r.appendMessage("Puede cerrar esta ventana para iniciar con su búsqueda.");
         return r;
     }
 
+    public boolean deleteRepo() {
+        boolean r = false;
+        String path = FileUtil.getWorkDirectory()
+                + File.separatorChar
+                + NAME_DEFAULT_INDEX;
+        File pathF = new File(path);
+
+        try {
+
+            FileUtil.delete(pathF);
+            if (!pathF.exists()) {
+                r = true;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ServicePrimus.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return r;
+    }
 }

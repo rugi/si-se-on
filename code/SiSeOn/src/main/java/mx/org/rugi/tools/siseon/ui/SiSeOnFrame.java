@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
@@ -103,6 +105,16 @@ public class SiSeOnFrame extends JFrame {
 
     }
 
+    private void validateMenu() {
+        if (!DemiurgoFacade.getInstance().getService().existRepo()) {
+            mCreateIndex.setEnabled(true);
+            mDeleteIndex.setEnabled(false);
+        } else {
+            mCreateIndex.setEnabled(false);
+            mDeleteIndex.setEnabled(true);
+        }
+    }
+
     private void initComponents() {
 
         //primero el menu
@@ -125,6 +137,13 @@ public class SiSeOnFrame extends JFrame {
         });
 
         mMain = new JMenu("INDEX");
+        mMain.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Existe el repo " + DemiurgoFacade.getInstance().getService().existRepo());
+
+            }
+        });
         mMain.setMnemonic(KeyEvent.VK_I);
 
         mMain.add(mCreateIndex);
@@ -133,12 +152,16 @@ public class SiSeOnFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 JDialog jdialog = new JDialog();
+                jdialog.addWindowListener(new WindowAdapter() {
+                    public void windowClosing(WindowEvent we) {
+                        validateMenu();
+                    }
+                });
                 jdialog.setSize(400, 400);
                 jdialog.setContentPane(new JINDEXCreator());
                 jdialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                 jdialog.setModal(true);
                 jdialog.setVisible(true);
-                //UpdateSearchOptionAndDisabledCreateIndexEnabledDeleteIndex;
             }
         });
 
@@ -148,8 +171,29 @@ public class SiSeOnFrame extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                System.out.println("Borrar indice");
-                //UpdateSearchOptionAndDisabledDeletedIndexEnabledCreateIndex;
+                Object[] options = {"Sí",
+                    "No"};
+                int n = JOptionPane.showOptionDialog(null,
+                        "¿Desea eliminar el INDEX actual?",
+                        "Eliminar el INDEX actual..",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+
+                if (n == 0) {
+                    //se elimina del modelo
+                    boolean del = DemiurgoFacade.getInstance().getService().deleteRepo();
+                    if (del) {
+                        JOptionPane.showMessageDialog(SiSeOnFrame.this,
+                                "El INDEX se elimino satisfactoriamente, puedes volver a crear uno.",
+                                "INDEX eliminado.",
+                                JOptionPane.WARNING_MESSAGE);
+                        validateMenu();
+                    }
+                }
+
             }
         });
 
@@ -194,6 +238,7 @@ public class SiSeOnFrame extends JFrame {
         this.add(scroll, BorderLayout.CENTER);
         status.setText(FileUtil.getWorkDirectory());
         this.add(status, BorderLayout.SOUTH);
+        validateMenu();
     }
 
     class SelectionListener implements ListSelectionListener {
