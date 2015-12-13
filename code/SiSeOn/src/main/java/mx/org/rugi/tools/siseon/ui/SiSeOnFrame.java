@@ -237,8 +237,8 @@ public class SiSeOnFrame extends JFrame {
                                 File myFile = new File(openFile);
                                 Desktop.getDesktop().open(myFile);
                             } catch (IOException ex) {
-                                JOptionPane.showMessageDialog(SiSeOnFrame.this, 
-                                        "No fue posible abrir el archivo.", 
+                                JOptionPane.showMessageDialog(SiSeOnFrame.this,
+                                        "No fue posible abrir el archivo.",
                                         "Archivo no encontrado o dañado.",
                                         JOptionPane.WARNING_MESSAGE);
                             }
@@ -289,22 +289,15 @@ public class SiSeOnFrame extends JFrame {
             cleanGrid();
 
             if (!DemiurgoFacade.getInstance().getService().existRepo()) {
-                JOptionPane.showMessageDialog(SiSeOnFrame.this, 
-                        "Aun no existe un INDEX sobre el cual buscar. Es preciso primero crear un INDEX.", 
+                JOptionPane.showMessageDialog(SiSeOnFrame.this,
+                        "Aun no existe un INDEX sobre el cual buscar. Es preciso primero crear un INDEX.",
                         "Debes crear un INDEX.",
                         JOptionPane.WARNING_MESSAGE);
-                return;                
+                return;
             }
-//            if (!clasButton.isSelected() && !jarButton.isSelected()) {
-//                JOptionPane.showMessageDialog(null, "Debe Seleccionar una opcion de busqueda: jar o class");
-//                return;
-//            }
-//            if (comboRepoModel.getSelectedItem() == null) {
-//                JOptionPane.showMessageDialog(null, "No existe un repositorio seleccionado.");
-//                return;
-//            }
+
             if (labelInput.getTextInput().trim().length() == 0) {
-                JOptionPane.showMessageDialog(SiSeOnFrame.this, "Debe especificar un criterio de búsqueda.");
+                JOptionPane.showMessageDialog(SiSeOnFrame.this, "Debe especificar una <palabra> de búsqueda.");
                 return;
             }
             SearchThread st = new SearchThread();
@@ -323,7 +316,8 @@ public class SiSeOnFrame extends JFrame {
             String searchText = labelInput.getTextInput().trim();
             Object[] r = null;
 
-            r = DemiurgoFacade.getInstance().getService().findByContent("word", 100).toArray();
+            r = DemiurgoFacade.getInstance().getService().findByContent(labelInput.getTextInput().trim(),
+                    100).toArray();
 
             if (r == null || r.length == 0) {
                 JOptionPane.showMessageDialog(null, "No se encontraron resultados para su busqueda.");

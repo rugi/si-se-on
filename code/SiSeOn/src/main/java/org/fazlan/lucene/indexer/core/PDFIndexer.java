@@ -2,6 +2,7 @@ package org.fazlan.lucene.indexer.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 
@@ -28,6 +29,6 @@ public class PDFIndexer implements FileIndexer {
                 file.getAbsolutePath(),
                 content,
                 (file.length() + ""),
-                file.lastModified() + "");
+                new Date(file.lastModified()).toString() );
     }
 }
