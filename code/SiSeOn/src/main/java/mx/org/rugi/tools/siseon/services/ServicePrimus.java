@@ -90,11 +90,11 @@ public class ServicePrimus {
             r.appendMessage("     Resumen de la operación:");
             Iterator it1 = map.keySet().iterator();
             StringBuilder key = new StringBuilder();
-            while (it1.hasNext()) {                
+            while (it1.hasNext()) {
                 key.delete(0, key.length());
                 key.append(it1.next().toString());
-                r.appendMessage("              ARCHIVO:"+key.toString());
-                r.appendMessage("                              RESULTADO:"+map.get(key.toString()));
+                r.appendMessage("              ARCHIVO:" + key.toString());
+                r.appendMessage("                              RESULTADO:" + map.get(key.toString()));
             }
         }
         r.appendMessage("");
@@ -102,6 +102,13 @@ public class ServicePrimus {
         r.appendMessage("");
         r.appendMessage("Puede cerrar esta ventana para iniciar con su búsqueda.");
         return r;
+    }
+
+    public String getPathMainRepo() {
+        String path = FileUtil.getWorkDirectory()
+                + File.separatorChar
+                + NAME_DEFAULT_INDEX;
+        return path;
     }
 
     public boolean deleteRepo() {
@@ -114,6 +121,7 @@ public class ServicePrimus {
         try {
 
             FileUtil.delete(pathF);
+            // sino existe o si tiene 0 archivos //TODO
             if (!pathF.exists()) {
                 r = true;
             }

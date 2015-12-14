@@ -191,6 +191,14 @@ public class SiSeOnFrame extends JFrame {
                                 "INDEX eliminado.",
                                 JOptionPane.WARNING_MESSAGE);
                         validateMenu();
+                    } else {
+                        JOptionPane.showMessageDialog(SiSeOnFrame.this,
+                                "El INDEX no se pudo eliminar de manera automática.\n ."
+                                + "Borra la carpeta :"
+                                + DemiurgoFacade.getInstance().getService().getPathMainRepo()
+                                + " para poder crear una nueva.",
+                                "INDEX requiere borrado manua..",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 }
 
