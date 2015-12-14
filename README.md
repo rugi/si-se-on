@@ -10,6 +10,8 @@ Su funcionamiento es el siguiente:
 - Muestra los resultados y da la opción de abrir un archivo en particular.
 
 En este video lo puedes ver funcionar.
+
+
 [![SiSeOn. Ejemplo de uso](http://img.youtube.com/vi/NP-qzMXNntc/0.jpg)](http://www.youtube.com/watch?v=NP-qzMXNntc)
 
 Está construido con java 7, el código del Indexador está basado en código de:
